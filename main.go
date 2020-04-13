@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"bytes"
+	"fmt"
 	"image"
 	_ "image/png"
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/examples/resources/images"
+	"github.com/hecterbonha/projectspiel/lib/components/adventurer"
 )
 
 const (
@@ -21,24 +21,24 @@ const (
 )
 
 var (
-	count       = 0
-	runnerImage *ebiten.Image
-	positionX = screenWidth/2 - frameWidth/2
-	positionY = screenHeight/2 - frameHeight/2
-	playerIsIdle = true
+	count           = 0
+	runnerImage     *ebiten.Image
+	positionX       = screenWidth/2 - frameWidth/2
+	positionY       = screenHeight/2 - frameHeight/2
+	playerIsIdle    = true
 	playerIsFlipped = false
-	frameNum    = 5
-	frameOY     = 0
-	speed = 1
+	frameNum        = 5
+	frameOY         = 0
+	speed           = 1
 )
 
 func spriteChangeState() {
 	if playerIsIdle {
-		frameNum    = 5
-		frameOY     = 0
+		frameNum = 12
+		frameOY = 0
 	} else {
-		frameNum    = 8
-		frameOY     = 32
+		frameNum = 8
+		frameOY = 32
 	}
 }
 
@@ -70,14 +70,12 @@ func characterMovement() {
 		playerIsIdle = false
 		positionY = positionY + speed
 	}
-	spriteChangeState()	
+	spriteChangeState()
 }
 
 func update(screen *ebiten.Image) error {
 	count++
-
 	characterMovement()
-
 	if ebiten.IsDrawingSkipped() {
 		return nil
 	}
@@ -91,19 +89,20 @@ func update(screen *ebiten.Image) error {
 	op.GeoM.Translate(float64(positionX), float64(positionY))
 	i := (count / 5) % frameNum
 	sx, sy := frameOX+i*frameWidth, frameOY
-	screen.DrawImage(runnerImage.SubImage(image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)).(*ebiten.Image), op)
+	hr := image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)
+	screen.DrawImage(runnerImage.SubImage(hr).(*ebiten.Image), op)
 	return nil
 }
 
 func main() {
 	fmt.Println("Welcome to Project Spiel")
-	img, _, err := image.Decode(bytes.NewReader(images.Runner_png))
+	img, _, err := image.Decode(bytes.NewReader(adventurer.Hero_png))
 	if err != nil {
 		log.Fatal(err)
 	}
 	runnerImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
-
-	if err := ebiten.Run(update, screenWidth, screenHeight, 4, "Project Spiel"); err != nil {
+	title := "Project Spiel"
+	if err := ebiten.Run(update, screenWidth, screenHeight, 4, title); err != nil {
 		log.Fatal(err)
 	}
 }

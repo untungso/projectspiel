@@ -1,5 +1,6 @@
 package math
 
+// Abs is doing something
 func Abs(x int) int {
 	if x < 0 {
 		return -x
@@ -7,6 +8,7 @@ func Abs(x int) int {
 	return x
 }
 
+// Mod is doing something
 func Mod(a, b int) int {
 	m := a % b
 	if m < 0 {

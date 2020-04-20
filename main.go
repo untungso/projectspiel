@@ -96,6 +96,7 @@ func update(screen *ebiten.Image) error {
 
 func main() {
 	fmt.Println("Welcome to Project Spiel")
+	adventurer.Animation("WOW")
 	img, _, err := image.Decode(bytes.NewReader(adventurer.Hero_png))
 	if err != nil {
 		log.Fatal(err)
